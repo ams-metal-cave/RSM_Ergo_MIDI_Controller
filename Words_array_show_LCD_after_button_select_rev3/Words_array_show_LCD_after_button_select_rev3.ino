@@ -5,7 +5,6 @@
 #define appVersion "v0.1"
 
 #define toggleSwitchPin 10
-
 #define button1Pin 7
 #define button2Pin 8
 
@@ -19,8 +18,8 @@
 #define lcd_FirstLine 0
 #define lcd_LastLine lcd_FirstLine + lcd_NrLines - 1
 
-#define midi_NrChannels 16
 #define midi_MinChan 1
+#define midi_NrChannels 16
 #define midi_MaxChan midi_MinChan + midi_NrChannels -1
 
 #define buttonState_Off 1
@@ -43,14 +42,13 @@ String words[5] = {"EEN", "TWEE", "DRIE", "VIER", "VIJF"};
 LiquidCrystal_I2C lcd(lcd_Address, lcd_NrCols, lcd_NrLines);  
 
 void setup() {
-
   String versionStr;
 
   pinMode(toggleSwitchPin, INPUT_PULLUP);
   pinMode(button1Pin, INPUT_PULLUP);
   pinMode(button2Pin, INPUT_PULLUP);
   Serial.begin(serialBaud);
-//  LiquidCrystal_I2C lcd(lcd_Address, lcd_NrCols, lcd_NrLines);  
+ 
   lcd.init();
   lcd.backlight();
   lcd.clear();
@@ -81,19 +79,20 @@ void loop() {
 }
 
 void initToggleOnMode() {
-  Serial.println("Toggle On mode");
+  Serial.println("Toggle On mode selected");
   lcd.clear();
   //delay(50);
   printToLCD(lcd_FirstCol, lcd_FirstLine, "Toggle switch is ON ");
 }
 
 void handleToggleOnMode() {
-  //Serial.println("Toggle On mode");
+  //Serial.println("Toggle On mode running");
 }
 
 void initToggleOffMode() {
-  Serial.println("Toggle Off mode");
+  Serial.println("Toggle Off mode selected");
   lcd.clear();
+  //delay(50);  
   printToLCD(lcd_FirstCol, lcd_FirstLine,"Toggle switch is OFF");
 }
 
