@@ -57,7 +57,7 @@ void setup() {
   versionStr = "version ";
   versionStr += appVersion;
   printToLCD(lcd_FirstCol,lcd_LastLine,versionStr);  
-  delay(100);
+  delay(2000);
 }
 
 void loop() {
