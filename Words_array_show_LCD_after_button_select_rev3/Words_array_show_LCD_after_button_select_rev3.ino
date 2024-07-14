@@ -6,23 +6,23 @@ const int toggleSwitchPin = 10;
 const int button1Pin = 7;
 const int button2Pin = 8;
 
-const serialBaud = 9600;
+const int serialBaud = 115200;
 
 const int buttonState_Off = 1;
 const int buttonState_On = 0;
 const int buttonState_Unknown = 3; //status knop weet je niet als MCU opstart; iemand kan de knop ingedrukt houden bij opstarten en dat geeft dus een verkeerde waarde als je er standaard vanuit gaat, dat hij normally open is
 
-const int lcd_NrCols = 20;
-const int lcd_NrLines = 4;
 const int lcd_Address = 0x27;
+const int lcd_NrCols = 20;
+const int lcd_NrLines = 2;
 const int lcd_FirstCol = 0;
 const int lcd_LastCol = lcd_FirstCol + lcd_NrCols - 1;
-const int lcd_FirstRow = 0;
-const int lcd_LastRow = lcd_FirstRow + lcd_NrRows - 1;
+const int lcd_FirstLine = 0;
+const int lcd_LastLine = lcd_FirstLine + lcd_NrLines - 1;
 
-const midi_MinChan = 1;
-const midi_MaxChan = 16;
-const midi_NrChannels = 16;
+const int midi_MinChan = 1;
+const int midi_MaxChan = 16;
+const int midi_NrChannels = 16;
 
 int prevtoggleSwitchState = buttonState_Unknown;
 int toggleSwitchState;
@@ -48,7 +48,7 @@ void setup() {
   lcd.clear();
   lcd.setCursor(lcd_FirstCol,lcd_FirstLine);
   lcd.print("M coder was here");
-  lcd.setCursor(lcd_FirstCol,lcd_FirstLine + 2);
+  lcd.setCursor(lcd_FirstCol,lcd_LastLine);
   lcd.print("R was looking");
   delay(100);
 }
@@ -116,7 +116,7 @@ while(toggleSwitchState == LOW){
   
   lcd.setCursor(lcd_FirstCol, lcd_FirstLine);
   lcd.print("toggleSwitch is ON");
-  lcd.setCursor(lcd_FirstCol, lcd_FirstLine + 1);
+  lcd.setCursor(lcd_FirstCol, lcd_LastLine);
   lcd.print(words[arrayIndex]);  
   lcd.setCursor(12,lcd_LastLine);
   lcd.print(arrayIndex);
@@ -132,7 +132,7 @@ while(toggleSwitchState == LOW){
       lcd.print("toggleSwitch is ON");
       lcd.setCursor(lcd_FirstCol, lcd_LastLine);
       lcd.print(words[arrayIndex++]);
-      lcd.setCursor(12,lcd_FirstLine + 1);
+      lcd.setCursor(12,lcd_LastLine);
       lcd.print(arrayIndex);
       //delay(500);
      }
@@ -146,7 +146,7 @@ while(toggleSwitchState == LOW){
       lcd.print("toggleSwitch is ON");
       lcd.setCursor(lcd_FirstCol, lcd_LastLine);
       lcd.print(words[arrayIndex]);
-      lcd.setCursor(12,1);
+      lcd.setCursor(12,lcd_LastLine);
       lcd.print(arrayIndex);
      }
    
@@ -195,8 +195,3 @@ while(toggleSwitchState == LOW){
   delay(1000);
   lcd.clear();
   */
-
-
-
-
-
