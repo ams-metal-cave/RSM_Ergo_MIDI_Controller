@@ -14,8 +14,9 @@ LiquidCrystal_I2C lcd(LCD_ADDRESS, LCD_COLS, LCD_ROWS);
 #define CLK_PIN 2 
 #define DT_PIN 3
 #define SW_PIN 6
-NewEncoder encoder(2, 3, 0, 15, -1, FULL_PULSE);
+NewEncoder encoder(2, 3, 0, 20, 0, FULL_PULSE);
 int16_t prevEncoderValue;
+long previousTimeoutMillis;
 
 // startpositie van de encoder + knop
 int prevPos = 0;
@@ -37,24 +38,24 @@ int lastButtonstate = 0;
 
 // Define the menu structure
 const char* menuItems[] = {
-  "Main Menu",
-  "  > Settings",
-  "  > About",
-  "  > Exit"
+  "Main Menu       ",
+  "  > Settings    ",
+  "  > About       ",
+  "  > Exit        "
 };
 
 const char* settingsMenuItems[] = {
-  "Settings",
-  "  > Brightness",
-  "  > Contrast",
-  "  > Back"
+  "Settings    ",
+  "  > Brightness  ",
+  "  > Contrast    ",
+  "  > Back        "
 };
 
 const char* aboutMenuItems[] = {
-  "About",
-  "  > Version",
-  "  > Credits",
-  "  > Back"
+  "About       ",
+  "  > Version     ",
+  "  > Credits     ",
+  "  > Back        "
 };
 
 // Define the current menu and item indices
@@ -62,8 +63,9 @@ int currentMenu = 0;
 int currentItem = 0;
 
 void setup() {
+  
   // Initialize the LCD display
-  lcd.begin();
+  lcd.init();
   lcd.backlight();
   lcd.setCursor(0, 0);
 
@@ -85,7 +87,6 @@ void setup() {
     prevEncoderValue = state.currentValue;
     Serial.println(prevEncoderValue);
   }
- 
   pinMode(SW_PIN, INPUT_PULLUP);
 
 }
@@ -98,13 +99,23 @@ void loop() {
 if (encoder.getState(currentEncoderState)) {
     Serial.print("Encoder: ");
     currentValue = currentEncoderState.currentValue;
-    if (currentValue != prevEncoderValue) {
+    // Update the current item index
+    if (currentValue != 0) {
+      
+      currentItem += currentValue;
       Serial.println(currentValue);
       prevEncoderValue = currentValue;
       currentItem = currentValue;
+
+    if (currentItem < 0) {
+      currentItem = 0;
+    } else if (currentItem >= sizeof(menuItems) / sizeof(menuItems[0])) {
+      currentItem = sizeof(menuItems) / sizeof(menuItems[0]) - 1;
+    }
+
     }  
-  previousTimeoutMillis = millis();
-  printMenuItem(currentValue); // Print the last selected menu-item 
+ previousTimeoutMillis = millis();
+ Serial.print(currentValue); // Print the last selected menu-item 
   }
 /*
   // Check if the encoder has changed
@@ -120,24 +131,14 @@ if (encoder.getState(currentEncoderState)) {
     // Update the LCD display
     lcd.setCursor(0, 0);
     lcd.print(menuItems[currentItem]);
-  }
+  
   buttonState = digitalRead(SW_PIN); // status switch knob encoder
   if (buttonState == LOW && lastButtonstate == LOW){
-    if(digitalRead(pinNr) == LOW){
-     pinLow();
-     previousTimeoutMillis = millis(); // Reset de timer
-     }
+     // Handle the button press
+     handleButtonPress();
     }
   lastButtonstate = buttonState;  
-  // Check if the button is pressed
-  /* 
-  if (digitalRead(ENC_BUTTON_PIN) == LOW) {
-    // Handle the button press
-    handleButtonPress();
-  }
-*/
-
-  delay(50);
+   
 }
 
 void handleButtonPress() {
@@ -190,14 +191,18 @@ void handleButtonPress() {
 
   // Update the LCD display
   lcd.setCursor(0, 0);
+  lcd.clear();
   switch (currentMenu) {
     case 0:
+  
       lcd.print(menuItems[currentItem]);
       break;
     case 1:
+    
       lcd.print(settingsMenuItems[currentItem]);
       break;
     case 2:
+    
       lcd.print(aboutMenuItems[currentItem]);
       break;
   }
