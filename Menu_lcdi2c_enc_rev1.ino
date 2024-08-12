@@ -39,22 +39,22 @@ int lastButtonstate = 0;
 // Define the menu structure
 const char* menuItems[] = {
   "Main Menu       ",
-  "  > Settings    ",
-  "  > About       ",
+  "  > level1    ",
+  "  > level2      ",
   "  > Exit        "
 };
 
 const char* settingsMenuItems[] = {
-  "Settings    ",
-  "  > Brightness  ",
-  "  > Contrast    ",
+  "level1    ",
+  "  > level1.1  ",
+  "  > level1.1    ",
   "  > Back        "
 };
 
 const char* aboutMenuItems[] = {
-  "About       ",
-  "  > Version     ",
-  "  > Credits     ",
+  "level2       ",
+  "  > level2.1     ",
+  "  > level2.2    ",
   "  > Back        "
 };
 
@@ -114,8 +114,8 @@ if (encoder.getState(currentEncoderState)) {
     }
 
     }  
- previousTimeoutMillis = millis();
- Serial.print(currentValue); // Print the last selected menu-item 
+ //previousTimeoutMillis = millis();
+// Serial.print(currentValue); // Print the last selected menu-item 
   }
 /*
   // Check if the encoder has changed
