@@ -11,10 +11,10 @@
 LiquidCrystal_I2C lcd(LCD_ADDRESS, LCD_COLS, LCD_ROWS);
 
 // PinsCLK, DT en SW of the encoder
-#define CLK_PIN 2 
-#define DT_PIN 3
+//#define CLK_PIN 2 
+//#define DT_PIN 3
 #define SW_PIN 6
-NewEncoder encoder(2, 3, 0, 20, 0, FULL_PULSE);
+NewEncoder encoder(2, 3, -20, 20, 0, FULL_PULSE);
 int16_t prevEncoderValue;
 long previousTimeoutMillis;
 
@@ -38,21 +38,21 @@ int lastButtonstate = 0;
 
 // Define the menu structure
 const char* menuItems[] = {
-  "Main Menu       ",
+  "Start_menu       ",
   "  > level1    ",
   "  > level2      ",
   "  > Exit        "
 };
 
 const char* settingsMenuItems[] = {
-  "level1    ",
+  "level1.X    ",
   "  > level1.1  ",
-  "  > level1.1    ",
+  "  > level1.2    ",
   "  > Back        "
 };
 
 const char* aboutMenuItems[] = {
-  "level2       ",
+  "level2.X       ",
   "  > level2.1     ",
   "  > level2.2    ",
   "  > Back        "
@@ -114,62 +114,61 @@ if (encoder.getState(currentEncoderState)) {
     }
 
     }  
- //previousTimeoutMillis = millis();
-// Serial.print(currentValue); // Print the last selected menu-item 
+    Serial.print("Status menu + level");
+    Serial.print(menuItems[currentItem]); // Print the last selected menu-item
+    Serial.println(currentItem); 
   }
-/*
-  // Check if the encoder has changed
-  if (encoderValue != 0) {
-    // Update the current item index
-    currentItem += encoderValue;
-    if (currentItem < 0) {
-      currentItem = 0;
-    } else if (currentItem >= sizeof(menuItems) / sizeof(menuItems[0])) {
-      currentItem = sizeof(menuItems) / sizeof(menuItems[0]) - 1;
-    }
-*/
+
     // Update the LCD display
     lcd.setCursor(0, 0);
     lcd.print(menuItems[currentItem]);
   
   buttonState = digitalRead(SW_PIN); // status switch knob encoder
-  if (buttonState == LOW && lastButtonstate == LOW){
+  if (buttonState == LOW && lastButtonstate == HIGH){
      // Handle the button press
      handleButtonPress();
+     Serial.print("buttonState:  ");
+     Serial.println(buttonState);
+     Serial.print("lastButtonstate:  ");
+     Serial.println(lastButtonstate);
     }
   lastButtonstate = buttonState;  
    
 }
-
 void handleButtonPress() {
   // Check the current menu and item indices
   switch (currentMenu) {
     case 0: // Main Menu
       switch (currentItem) {
-        case 1: // Settings
+        case 1: // level1
           currentMenu = 1;
-          currentItem = 0;
+          currentItem = currentItem + 1;
           break;
-        case 2: // About
+        case 2: // level2
           currentMenu = 2;
-          currentItem = 0;
+          currentItem = currentItem + 1 ;
           break;
         case 3: // Exit
+          currentMenu = currentMenu -1;
+          currentItem = 0;
           // Exit the menu
           break;
       }
       break;
-    case 1: // Settings Menu
+    case 1: // level1
       switch (currentItem) {
         case 1: // Brightness
           // Handle brightness setting
+          currentMenu = 1;
+          currentItem = currentItem +1;
           break;
-        case 2: // Contrast
+        case 2: // level2
           // Handle contrast setting
           break;
         case 3: // Back
           currentMenu = 0;
           currentItem = 0;
+          // Exit the menu
           break;
       }
       break;
@@ -184,6 +183,7 @@ void handleButtonPress() {
         case 3: // Back
           currentMenu = 0;
           currentItem = 0;
+          // Exit the menu
           break;
       }
       break;
@@ -200,10 +200,16 @@ void handleButtonPress() {
     case 1:
     
       lcd.print(settingsMenuItems[currentItem]);
+      lcd.setCursor(1,5);
+      lcd.print("yes");
       break;
     case 2:
     
       lcd.print(aboutMenuItems[currentItem]);
+      lcd.setCursor(1,5);
+      lcd.print("level 2.x deep");
+      delay(1000);
+      lcd.clear();
       break;
   }
 }
